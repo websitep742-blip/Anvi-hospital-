@@ -1,24 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Open WhatsApp</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Quick Opener</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0d1117;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+width:95%;
+max-width:420px;
+background:#161b22;
+padding:25px;
+border-radius:18px;
+box-shadow:0 0 20px rgba(0,255,100,.2);
+}
+
+h2{
+color:#25D366;
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:15px;
+font-size:18px;
+border:none;
+border-radius:12px;
+outline:none;
+background:#21262d;
+color:#fff;
+margin-bottom:15px;
+}
+
+button{
+width:100%;
+padding:15px;
+font-size:18px;
+font-weight:bold;
+border:none;
+border-radius:12px;
+background:#25D366;
+color:#fff;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+#history{
+margin-top:20px;
+max-height:220px;
+overflow:auto;
+}
+
+.item{
+background:#21262d;
+color:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.open{
+background:#25D366;
+border:none;
+padding:8px 14px;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+
 </head>
 <body>
-<h2>WhatsApp Chat Opener</h2>
 
-<input type="tel" id="number" placeholder="Enter Mobile Number">
-<button onclick="openWhatsApp()">Open WhatsApp</button>
+<div class="card">
+
+<h2>📲 WhatsApp Quick Opener</h2>
+
+<input
+type="tel"
+id="num"
+placeholder="Enter Mobile Number"
+maxlength="10"
+onkeypress="if(event.key==='Enter')openChat()">
+
+<button onclick="openChat()">Open WhatsApp</button>
+
+<div id="history"></div>
+
+</div>
 
 <script>
-function openWhatsApp() {
-  let number = document.getElementById("number").value.trim();
 
-  if (number.length === 10) {
-    number = "91" + number;
-  }
+let history=JSON.parse(localStorage.getItem("numbers"))||[];
 
-  window.open("https://wa.me/" + number, "_blank");
+show();
+
+function openChat(){
+
+let n=document.getElementById("num").value.trim();
+
+if(n.length!=10){
+alert("Enter Valid Number");
+return;
 }
+
+window.open("https://wa.me/91"+n,"_blank");
+
+if(!history.includes(n)){
+history.unshift(n);
+history=history.slice(0,20);
+localStorage.setItem("numbers",JSON.stringify(history));
+}
+
+document.getElementById("num").value="";
+
+show();
+
+}
+
+function show(){
+
+let box=document.getElementById("history");
+
+box.innerHTML="";
+
+history.forEach(x=>{
+
+box.innerHTML+=`
+<div class="item">
+<span>${x}</span>
+<button class="open" onclick="window.open('https://wa.me/91${x}','_blank')">Open</button>
+</div>
+`;
+
+});
+
+}
+
 </script>
 
 </body>
